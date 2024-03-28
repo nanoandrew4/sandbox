@@ -27,6 +27,9 @@ func (q *Queue[T]) Dequeue() (rVal T, err error) {
 	}
 	rVal = q.head.val
 	q.head = q.head.next
+	if q.head == nil {
+		q.tail = nil
+	}
 	return rVal, nil
 }
 
