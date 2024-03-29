@@ -21,7 +21,7 @@ func (q *Stack[T]) Push(val T) {
 
 func (q *Stack[T]) Pop() (rVal T, err error) {
 	if q.head == nil {
-		return rVal, errors.New("queue is empty")
+		return rVal, errors.New("stack is empty")
 	}
 	rVal = q.head.val
 	q.head = q.head.next
