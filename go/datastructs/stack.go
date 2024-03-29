@@ -2,35 +2,35 @@ package datastructs
 
 import "errors"
 
-type sNode[T comparable] struct {
+type sNode[T any] struct {
 	val  T
 	next *sNode[T]
 }
 
-type Stack[T comparable] struct {
+type Stack[T any] struct {
 	head *sNode[T]
 }
 
-func (q *Stack[T]) Push(val T) {
-	if q.head == nil {
-		q.head = &sNode[T]{val: val}
+func (s *Stack[T]) Push(val T) {
+	if s.head == nil {
+		s.head = &sNode[T]{val: val}
 		return
 	}
-	q.head = &sNode[T]{val: val, next: q.head}
+	s.head = &sNode[T]{val: val, next: s.head}
 }
 
-func (q *Stack[T]) Pop() (rVal T, err error) {
-	if q.head == nil {
+func (s *Stack[T]) Pop() (rVal T, err error) {
+	if s.head == nil {
 		return rVal, errors.New("stack is empty")
 	}
-	rVal = q.head.val
-	q.head = q.head.next
+	rVal = s.head.val
+	s.head = s.head.next
 	return rVal, nil
 }
 
-func (q *Stack[T]) Peek() (rVal T, err error) {
-	if q.head == nil {
+func (s *Stack[T]) Peek() (rVal T, err error) {
+	if s.head == nil {
 		return rVal, errors.New("stack is empty")
 	}
-	return q.head.val, nil
+	return s.head.val, nil
 }

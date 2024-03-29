@@ -2,12 +2,12 @@ package datastructs
 
 import "errors"
 
-type qNode[T comparable] struct {
+type qNode[T any] struct {
 	val  T
 	next *qNode[T]
 }
 
-type Queue[T comparable] struct {
+type Queue[T any] struct {
 	head, tail *qNode[T]
 }
 
