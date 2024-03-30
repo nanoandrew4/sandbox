@@ -68,8 +68,7 @@ func (rb *RingBuffer[T]) Peek() (retVal T, err error) {
 
 func (rb *RingBuffer[T]) resize(minCap int) {
 	newArr := make([]T, max(cap(rb.arr)*2, minCap))
-	copy(newArr, rb.arr[rb.headIdx:])
-	copy(newArr[rb.length-rb.headIdx:], rb.arr[:rb.tailIdx])
+	copy(newArr, append(rb.arr[rb.headIdx:], rb.arr[:rb.tailIdx]...))
 	rb.headIdx = 0
 	rb.tailIdx = rb.length
 	rb.arr = newArr
