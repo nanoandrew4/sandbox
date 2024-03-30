@@ -2,26 +2,45 @@ package datastructs
 
 import "testing"
 
-func TestRingBuffer_Enqueue(t *testing.T) {
-	rb := RingBuffer[int]{}
-	rb.Enqueue(1)
-	rb.Enqueue(2)
-	rb.Enqueue(3)
-	rb.Enqueue(4)
+const (
+	rbRangeToTestWith         = 100
+	rbIterationsPerRangeValue = 1000
+)
 
-	if val, err := rb.Peek(); val != 4 || err != nil {
-		t.Error("expected peeked value to be 4")
+func TestRingBuffer_WrapAroundQueue(t *testing.T) {
+	t.Parallel()
+	rb := RingBuffer[int]{}
+
+	for numsToAdd := 1; numsToAdd < rbRangeToTestWith; numsToAdd++ {
+		for i := 0; i < rbIterationsPerRangeValue; i++ {
+			for j := 0; j < numsToAdd; j++ {
+				rb.Enqueue(j)
+			}
+
+			for j := 0; j < numsToAdd; j++ {
+				if val, err := rb.Dequeue(); val != j || err != nil {
+					t.Errorf("expected dequeued value to be %d", j)
+				}
+			}
+		}
 	}
 }
 
-func TestRingBuffer_Push(t *testing.T) {
+func TestRingBuffer_WrapAroundStack(t *testing.T) {
+	t.Parallel()
 	rb := RingBuffer[int]{}
-	rb.Push(1)
-	rb.Push(2)
-	rb.Push(3)
-	rb.Push(4)
 
-	if val, err := rb.Peek(); val != 1 || err != nil {
-		t.Error("expected peeked value to be 1")
+	for numsToAdd := 1; numsToAdd < rbRangeToTestWith; numsToAdd++ {
+		for i := 0; i < rbIterationsPerRangeValue; i++ {
+			for j := 0; j < numsToAdd; j++ {
+				rb.Push(j)
+			}
+
+			for j := 0; j < numsToAdd; j++ {
+				if val, err := rb.Pop(); val != j || err != nil {
+					t.Errorf("expected popped value to be %d", j)
+				}
+			}
+		}
 	}
 }

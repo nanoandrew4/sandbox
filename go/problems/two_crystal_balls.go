@@ -2,6 +2,7 @@ package problems
 
 import "math"
 
+// sqrt(n) time complexity, which is uncommon :)
 func TwoCrystalBalls(breaks []bool) int {
 	numOfFloorsSqrt := int(math.Sqrt(float64(len(breaks))))
 
