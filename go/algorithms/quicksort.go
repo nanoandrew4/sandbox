@@ -20,9 +20,11 @@ func partition[T sortable](arr []T, lo, hi int) (pivIdx int) {
 	for ; lo < hi; lo++ {
 		if arr[lo] <= pivot {
 			idx++
-			tmp = arr[lo]
-			arr[lo] = arr[idx]
-			arr[idx] = tmp
+			if lo != idx {
+				tmp = arr[lo]
+				arr[lo] = arr[idx]
+				arr[idx] = tmp
+			}
 		}
 	}
 
