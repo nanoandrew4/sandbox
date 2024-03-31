@@ -34,8 +34,7 @@ func FastBubbleSort[T sortable](arr []T) {
 	}
 }
 
-// The anonymous function makes this slower than even the default implementation
-func SlowBubbleSort[T sortable](arr []T) {
+func CleanFastBubbleSort[T sortable](arr []T) {
 	var tmp T
 	var arrLen = len(arr)
 	innerSort := func(upperBound int) {

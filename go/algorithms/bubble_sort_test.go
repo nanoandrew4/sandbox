@@ -35,7 +35,7 @@ func TestFastBubbleSort(t *testing.T) {
 func TestSlowBubbleSort(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		testValues := generateRandomNumbers(1000)
-		SlowBubbleSort(testValues)
+		CleanFastBubbleSort(testValues)
 		for j := 0; j < len(testValues)-1; j++ {
 			if testValues[j] > testValues[j+1] {
 				t.Error(fmt.Sprintf("sorting error at index %d", j-1))
@@ -46,31 +46,44 @@ func TestSlowBubbleSort(t *testing.T) {
 }
 
 func BenchmarkBubbleSort(b *testing.B) {
-	for _, numbersToSort := range []int{1000, 10000, 100000} {
-		b.Run(fmt.Sprintf("%d", numbersToSort), func(b *testing.B) {
-			testValues := generateRandomNumbers(numbersToSort)
-			b.ResetTimer()
-			BubbleSort(testValues)
-		})
+	numOfArraysToGenerateMap := map[int]int{
+		1e2: 100000,
+		1e3: 10000,
+		1e4: 1000,
 	}
-}
-
-func BenchmarkFastBubbleSort(b *testing.B) {
-	for _, numbersToSort := range []int{1000, 10000, 100000} {
-		b.Run(fmt.Sprintf("%d", numbersToSort), func(b *testing.B) {
+	for _, numbersToSort := range []int{1e2, 1e3, 1e4} {
+		var aggregatedTestValues [][]int
+		for t := 0; t < numOfArraysToGenerateMap[numbersToSort]; t++ {
 			testValues := generateRandomNumbers(numbersToSort)
-			b.ResetTimer()
-			FastBubbleSort(testValues)
+			aggregatedTestValues = append(aggregatedTestValues, testValues)
+		}
+
+		b.Run(fmt.Sprintf("Std/%d", numbersToSort), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				b.StopTimer()
+				testValues := make([]int, len(aggregatedTestValues[0]))
+				copy(testValues, aggregatedTestValues[i%len(aggregatedTestValues)])
+				b.StartTimer()
+				BubbleSort(testValues)
+			}
 		})
-	}
-}
-
-func BenchmarkSlowBubbleSort(b *testing.B) {
-	for _, numbersToSort := range []int{1000, 10000, 100000} {
-		b.Run(fmt.Sprintf("%d", numbersToSort), func(b *testing.B) {
-			testValues := generateRandomNumbers(numbersToSort)
-			b.ResetTimer()
-			SlowBubbleSort(testValues)
+		b.Run(fmt.Sprintf("Fast/%d", numbersToSort), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				b.StopTimer()
+				testValues := make([]int, len(aggregatedTestValues[0]))
+				copy(testValues, aggregatedTestValues[i%len(aggregatedTestValues)])
+				b.StartTimer()
+				FastBubbleSort(testValues)
+			}
+		})
+		b.Run(fmt.Sprintf("CleanFastBubbleSort/%d", numbersToSort), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				b.StopTimer()
+				testValues := make([]int, len(aggregatedTestValues[0]))
+				copy(testValues, aggregatedTestValues[i%len(aggregatedTestValues)])
+				b.StartTimer()
+				CleanFastBubbleSort(testValues)
+			}
 		})
 	}
 }

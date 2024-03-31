@@ -26,20 +26,16 @@ func TestNonRecursiveBinarySearch(t *testing.T) {
 
 func BenchmarkBinarySearch(b *testing.B) {
 	for _, numbersToSort := range []int{1e6, 1e7, 1e8} {
-		b.Run(fmt.Sprintf("%d", numbersToSort), func(b *testing.B) {
-			testValues := makeRange(0, numbersToSort)
-			b.ResetTimer()
-			_ = BinarySearch(testValues, rand.Int()%numbersToSort)
+		testValues := makeRange(0, numbersToSort)
+		b.Run(fmt.Sprintf("Recursive/%d", numbersToSort), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				_ = BinarySearch(testValues, rand.Int()%numbersToSort)
+			}
 		})
-	}
-}
-
-func BenchmarkNonRecursiveBinarySearch(b *testing.B) {
-	for _, numbersToSort := range []int{1e6, 1e7, 1e8} {
-		b.Run(fmt.Sprintf("%d", numbersToSort), func(b *testing.B) {
-			testValues := makeRange(0, numbersToSort)
-			b.ResetTimer()
-			_ = NonRecursiveBinarySearch(testValues, rand.Int()%numbersToSort)
+		b.Run(fmt.Sprintf("NonRecursive/%d", numbersToSort), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				_ = NonRecursiveBinarySearch(testValues, rand.Int()%numbersToSort)
+			}
 		})
 	}
 }
