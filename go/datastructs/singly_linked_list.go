@@ -2,33 +2,33 @@ package datastructs
 
 import "errors"
 
-type llNode[T comparable] struct {
+type sllNode[T comparable] struct {
 	val  T
-	next *llNode[T]
+	next *sllNode[T]
 }
 
 type SinglyLinkedList[T comparable] struct {
-	head *llNode[T]
+	head *sllNode[T]
 }
 
 func (ll *SinglyLinkedList[T]) Prepend(val T) {
 	if ll.head == nil {
-		ll.head = &llNode[T]{val: val}
+		ll.head = &sllNode[T]{val: val}
 		return
 	}
-	ll.head = &llNode[T]{val: val, next: ll.head}
+	ll.head = &sllNode[T]{val: val, next: ll.head}
 }
 
 func (ll *SinglyLinkedList[T]) Append(val T) {
 	if ll.head == nil {
-		ll.head = &llNode[T]{val: val}
+		ll.head = &sllNode[T]{val: val}
 		return
 	}
 	node := ll.head
 	for ; node.next != nil; node = node.next {
 	}
 
-	node.next = &llNode[T]{val: val}
+	node.next = &sllNode[T]{val: val}
 }
 
 func (ll *SinglyLinkedList[T]) Get(idx int) (T, error) {
@@ -49,7 +49,7 @@ func (ll *SinglyLinkedList[T]) Delete(idx int) error {
 		return nil
 	}
 
-	var prevNode *llNode[T]
+	var prevNode *sllNode[T]
 	for i, node := 0, ll.head; node != nil; i, prevNode, node = i+1, node, node.next {
 		if i == idx && node != nil && prevNode != nil {
 			prevNode.next = node.next
@@ -80,7 +80,7 @@ func (ll *SinglyLinkedList[T]) Reset() {
 }
 
 func (ll *SinglyLinkedList[T]) Reverse() {
-	var prevNode, tmpNode *llNode[T]
+	var prevNode, tmpNode *sllNode[T]
 	for node := ll.head; node != nil; prevNode, node = node, tmpNode {
 		tmpNode = node.next
 		node.next = prevNode
