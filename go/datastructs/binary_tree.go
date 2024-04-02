@@ -90,17 +90,10 @@ func (bt *BinaryTree[T]) Equals(bt2 *BinaryTree[T]) bool {
 func areNodesEqual[T comparable](n1, n2 *btNode[T]) bool {
 	if n1 == nil && n2 == nil {
 		return true
-	} else if xor(n1 != nil, n2 != nil) || xor(n1.left != nil, n2.left != nil) || xor(n1.right != nil, n2.right != nil) {
+	} else if n1 == nil || n2 == nil {
 		return false
 	} else if n1.val != n2.val {
 		return false
 	}
 	return areNodesEqual(n1.left, n2.left) && areNodesEqual(n1.right, n2.right)
-}
-
-func xor(b1, b2 bool) bool {
-	if (b1 && !b2) || (b2 && !b1) {
-		return true
-	}
-	return false
 }
