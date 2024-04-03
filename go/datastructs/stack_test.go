@@ -10,27 +10,27 @@ func TestStack(t *testing.T) {
 	q.Push(3)
 
 	if val, err := q.Peek(); val != 3 || err != nil {
-		t.Error("expected first peeked value to be 3")
+		t.Fatal("expected first peeked value to be 3")
 	}
 	if val, err := q.Pop(); val != 3 || err != nil {
-		t.Error("expected first pop value to be 3")
+		t.Fatal("expected first pop value to be 3")
 	}
 	if val, err := q.Peek(); val != 2 || err != nil {
-		t.Error("expected second peeked value to be 2")
+		t.Fatal("expected second peeked value to be 2")
 	}
 	if val, err := q.Pop(); val != 2 || err != nil {
-		t.Error("expected second pop value to be 2")
+		t.Fatal("expected second pop value to be 2")
 	}
 	if val, err := q.Peek(); val != 1 || err != nil {
-		t.Error("expected third peeked value to be 1")
+		t.Fatal("expected third peeked value to be 1")
 	}
 	if val, err := q.Pop(); val != 1 || err != nil {
-		t.Error("expected third pop value to be 1")
+		t.Fatal("expected third pop value to be 1")
 	}
 	if val, err := q.Peek(); val != 0 || err == nil {
-		t.Error("expected fourth peeked value to return error, since queue should be empty")
+		t.Fatal("expected fourth peeked value to return error, since queue should be empty")
 	}
 	if val, err := q.Pop(); val != 0 || err == nil {
-		t.Error("expected fourth pop value to return error, since queue should be empty")
+		t.Fatal("expected fourth pop value to return error, since queue should be empty")
 	}
 }

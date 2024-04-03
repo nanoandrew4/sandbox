@@ -23,7 +23,7 @@ func TestTwoGlassBalls(t *testing.T) {
 
 		firstFloorThatBreaks := TwoCrystalBalls(ballWillBreak)
 		if expectedFirstFloorThatBreaks != firstFloorThatBreaks {
-			t.Error(fmt.Sprintf("%d: expected to break at floor %d, but broke at floor %d", numOfFloors,
+			t.Fatal(fmt.Sprintf("%d: expected to break at floor %d, but broke at floor %d", numOfFloors,
 				expectedFirstFloorThatBreaks, firstFloorThatBreaks))
 		}
 	}

@@ -10,7 +10,7 @@ func TestArrayList_Prepend(t *testing.T) {
 	al.Prepend(4)
 
 	if val, err := al.Get(0); val != 4 || err != nil {
-		t.Error("expected first element of the array list to be 4")
+		t.Fatal("expected first element of the array list to be 4")
 	}
 }
 
@@ -22,7 +22,7 @@ func TestArrayList_Append(t *testing.T) {
 	al.Append(4)
 
 	if val, err := al.Get(0); val != 1 || err != nil {
-		t.Error("expected first element of the array list to be 1")
+		t.Fatal("expected first element of the array list to be 1")
 	}
 }
 
@@ -34,10 +34,10 @@ func TestArrayList_Pop(t *testing.T) {
 	al.Append(4)
 
 	if val, err := al.Pop(); val != 4 || err != nil {
-		t.Error("expected popped element to be 1")
+		t.Fatal("expected popped element to be 1")
 	}
 	if val, err := al.Pop(); val != 3 || err != nil {
-		t.Error("expected popped element to be 2")
+		t.Fatal("expected popped element to be 2")
 	}
 }
 
@@ -49,10 +49,10 @@ func TestArrayList_Peek(t *testing.T) {
 	al.Append(4)
 
 	if val, err := al.Peek(); val != 4 || err != nil {
-		t.Error("expected popped element to be 1")
+		t.Fatal("expected popped element to be 1")
 	}
 
 	if val, err := al.Peek(); val != 4 || err != nil {
-		t.Error("expected popped element to be 1 again")
+		t.Fatal("expected popped element to be 1 again")
 	}
 }

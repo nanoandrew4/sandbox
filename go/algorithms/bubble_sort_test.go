@@ -12,8 +12,7 @@ func TestBubbleSort(t *testing.T) {
 		BubbleSort(testValues)
 		for j := 0; j < len(testValues)-1; j++ {
 			if testValues[j] > testValues[j+1] {
-				t.Error(fmt.Sprintf("sorting error at index %d", j-1))
-				break
+				t.Fatal(fmt.Sprintf("sorting error at index %d", j-1))
 			}
 		}
 	}
@@ -25,8 +24,7 @@ func TestFastBubbleSort(t *testing.T) {
 		FastBubbleSort(testValues)
 		for j := 0; j < len(testValues)-1; j++ {
 			if testValues[j] > testValues[j+1] {
-				t.Error(fmt.Sprintf("sorting error at index %d", j-1))
-				break
+				t.Fatal(fmt.Sprintf("sorting error at index %d", j-1))
 			}
 		}
 	}
@@ -38,8 +36,7 @@ func TestSlowBubbleSort(t *testing.T) {
 		CleanFastBubbleSort(testValues)
 		for j := 0; j < len(testValues)-1; j++ {
 			if testValues[j] > testValues[j+1] {
-				t.Error(fmt.Sprintf("sorting error at index %d", j-1))
-				break
+				t.Fatal(fmt.Sprintf("sorting error at index %d", j-1))
 			}
 		}
 	}

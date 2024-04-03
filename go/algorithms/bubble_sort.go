@@ -1,6 +1,8 @@
 package algorithms
 
-func BubbleSort[T sortable](arr []T) {
+import "sandbox/types"
+
+func BubbleSort[T types.Sortable](arr []T) {
 	var tmp T
 	for i := len(arr); i > 0; i-- {
 		for j := 0; j < i; j++ {
@@ -13,7 +15,7 @@ func BubbleSort[T sortable](arr []T) {
 	}
 }
 
-func FastBubbleSort[T sortable](arr []T) {
+func FastBubbleSort[T types.Sortable](arr []T) {
 	var tmp T
 	var arrLen = len(arr)
 	for j := 0; j < arrLen; j++ {
@@ -34,7 +36,7 @@ func FastBubbleSort[T sortable](arr []T) {
 	}
 }
 
-func CleanFastBubbleSort[T sortable](arr []T) {
+func CleanFastBubbleSort[T types.Sortable](arr []T) {
 	var tmp T
 	var arrLen = len(arr)
 	innerSort := func(upperBound int) {

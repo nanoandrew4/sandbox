@@ -1,10 +1,12 @@
 package algorithms
 
-func QuickSort[T sortable](arr []T) {
+import "sandbox/types"
+
+func QuickSort[T types.Sortable](arr []T) {
 	qs(arr, 0, len(arr)-1)
 }
 
-func qs[T sortable](arr []T, lo, hi int) {
+func qs[T types.Sortable](arr []T, lo, hi int) {
 	if lo >= hi {
 		return
 	}
@@ -13,7 +15,7 @@ func qs[T sortable](arr []T, lo, hi int) {
 	qs(arr, piv+1, hi)
 }
 
-func partition[T sortable](arr []T, lo, hi int) (pivIdx int) {
+func partition[T types.Sortable](arr []T, lo, hi int) (pivIdx int) {
 	idx := lo - 1
 	pivot := arr[hi]
 	var tmp T
@@ -36,7 +38,7 @@ func partition[T sortable](arr []T, lo, hi int) (pivIdx int) {
 
 // For some reason this was the quicksort implementation I came up with when trying to implement it from memory, but
 // is less performant than the standard implementation
-func BalancedQuickSort[T sortable](arr []T) {
+func BalancedQuickSort[T types.Sortable](arr []T) {
 	if len(arr) < 2 {
 		return
 	}

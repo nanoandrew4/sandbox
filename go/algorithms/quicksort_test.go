@@ -11,8 +11,7 @@ func TestQuickSort(t *testing.T) {
 		QuickSort(testArr)
 		for j := 0; j < len(testArr)-1; j++ {
 			if testArr[j] > testArr[j+1] {
-				t.Error(fmt.Sprintf("sorting error at index %d", j))
-				break
+				t.Fatal(fmt.Sprintf("sorting error at index %d", j))
 			}
 		}
 	}
@@ -24,8 +23,7 @@ func TestBalancedQuickSort(t *testing.T) {
 		BalancedQuickSort(testArr)
 		for j := 0; j < len(testArr)-1; j++ {
 			if testArr[j] > testArr[j+1] {
-				t.Error(fmt.Sprintf("sorting error at index %d", j))
-				break
+				t.Fatal(fmt.Sprintf("sorting error at index %d", j))
 			}
 		}
 	}
