@@ -1,4 +1,4 @@
-package datastructs
+package list
 
 import (
 	"slices"

@@ -1,4 +1,4 @@
-package datastructs
+package list
 
 import "errors"
 
@@ -34,7 +34,7 @@ func (ll *DoublyLinkedList[T]) Append(val T) {
 
 func (ll *DoublyLinkedList[T]) Get(idx int) (T, error) {
 	for i, node := 0, ll.head; node != nil; i, node = i+1, node.next {
-		if i == idx && node != nil {
+		if i == idx {
 			return node.val, nil
 		}
 	}
@@ -52,7 +52,7 @@ func (ll *DoublyLinkedList[T]) Delete(idx int) error {
 
 	var prevNode *dllNode[T]
 	for i, node := 0, ll.head; node != nil; i, prevNode, node = i+1, node, node.next {
-		if i == idx && node != nil && prevNode != nil {
+		if i == idx && prevNode != nil {
 			prevNode.next = node.next
 			if node.next != nil {
 				node.next.prev = prevNode

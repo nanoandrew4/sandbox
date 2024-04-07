@@ -1,4 +1,6 @@
-package datastructs
+package tree
+
+import "sandbox/datastructs"
 
 type TreeType int
 
@@ -32,7 +34,7 @@ func (bt *BinaryTree[T]) Insert(valuesToInsert ...T) {
 
 	if len(valuesToInsert) > 0 {
 		var valIdx int
-		q := &Queue[*btNode[T]]{}
+		q := &datastructs.Queue[*btNode[T]]{}
 		bt.walkBreadthFirstAndRunFunc(q, bt.root, func(node *btNode[T]) bool {
 			if node.left == nil {
 				node.left = &btNode[T]{val: valuesToInsert[valIdx]}
@@ -81,7 +83,7 @@ func (bt *BinaryTree[T]) walkDepthFirstAndRunFunc(node *btNode[T], f NodeTravers
 	}
 }
 
-func (bt *BinaryTree[T]) walkBreadthFirstAndRunFunc(q *Queue[*btNode[T]], node *btNode[T], f NodeTraversalFunc[T]) {
+func (bt *BinaryTree[T]) walkBreadthFirstAndRunFunc(q *datastructs.Queue[*btNode[T]], node *btNode[T], f NodeTraversalFunc[T]) {
 	if node == nil {
 		return
 	}

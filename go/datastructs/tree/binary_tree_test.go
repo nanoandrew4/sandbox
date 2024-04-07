@@ -1,4 +1,4 @@
-package datastructs
+package tree
 
 import (
 	"testing"
@@ -49,16 +49,16 @@ func TestBinaryTree_Equals(t *testing.T) {
 	bt2.Insert(2)
 
 	if bt1.Equals(nil) {
-		t.Fatal("binary trees should not be equal when tree to compare against is nil")
+		t.Fatal("binary tree should not be equal when tree to compare against is nil")
 	}
 
 	if bt1.Equals(bt2) {
-		t.Fatal("binary trees should not be equal")
+		t.Fatal("binary tree should not be equal")
 	}
 
 	bt2.Insert(3)
 	if !bt1.Equals(bt2) {
-		t.Fatal("binary trees should be equal")
+		t.Fatal("binary tree should be equal")
 	}
 
 	// Same shape as 1, different values
@@ -68,7 +68,7 @@ func TestBinaryTree_Equals(t *testing.T) {
 	bt3.Insert(4)
 
 	if bt1.Equals(bt3) {
-		t.Fatal("binary trees 1, 3 should not be equal")
+		t.Fatal("binary tree 1, 3 should not be equal")
 	}
 }
 

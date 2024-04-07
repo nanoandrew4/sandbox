@@ -1,4 +1,4 @@
-package datastructs
+package list
 
 import "errors"
 
@@ -33,7 +33,7 @@ func (ll *SinglyLinkedList[T]) Append(val T) {
 
 func (ll *SinglyLinkedList[T]) Get(idx int) (T, error) {
 	for i, node := 0, ll.head; node != nil; i, node = i+1, node.next {
-		if i == idx && node != nil {
+		if i == idx {
 			return node.val, nil
 		}
 	}
@@ -51,7 +51,7 @@ func (ll *SinglyLinkedList[T]) Delete(idx int) error {
 
 	var prevNode *sllNode[T]
 	for i, node := 0, ll.head; node != nil; i, prevNode, node = i+1, node, node.next {
-		if i == idx && node != nil && prevNode != nil {
+		if i == idx && prevNode != nil {
 			prevNode.next = node.next
 			node.next = nil
 			return nil

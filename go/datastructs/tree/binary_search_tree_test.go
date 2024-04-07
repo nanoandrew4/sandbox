@@ -1,4 +1,4 @@
-package datastructs
+package tree
 
 import (
 	"slices"
