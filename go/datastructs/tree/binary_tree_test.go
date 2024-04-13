@@ -9,8 +9,8 @@ func TestBinaryTree_Insert(t *testing.T) {
 	bt.Insert(1, 2, 3)
 
 	var preOrderValues []int
-	bt.WalkDepthFirst(func(node *btNode[int]) (continueTraversal bool) {
-		preOrderValues = append(preOrderValues, node.val)
+	bt.WalkDepthFirst(func(node binaryNode[int]) (continueTraversal bool) {
+		preOrderValues = append(preOrderValues, node.val())
 		return true
 	})
 
@@ -20,8 +20,8 @@ func TestBinaryTree_Insert(t *testing.T) {
 	bt.Insert(4)
 
 	var inOrderValues []int
-	bt.WalkDepthFirst(func(node *btNode[int]) (continueTraversal bool) {
-		inOrderValues = append(inOrderValues, node.val)
+	bt.WalkDepthFirst(func(node binaryNode[int]) (continueTraversal bool) {
+		inOrderValues = append(inOrderValues, node.val())
 		return true
 	})
 
@@ -30,8 +30,8 @@ func TestBinaryTree_Insert(t *testing.T) {
 	bt.tType = postOrderTree
 
 	var postOrderValues []int
-	bt.WalkDepthFirst(func(node *btNode[int]) (continueTraversal bool) {
-		postOrderValues = append(postOrderValues, node.val)
+	bt.WalkDepthFirst(func(node binaryNode[int]) (continueTraversal bool) {
+		postOrderValues = append(postOrderValues, node.val())
 		return true
 	})
 
@@ -99,19 +99,19 @@ func TestBinaryTree_Delete(t *testing.T) {
 	}
 
 	// check preconditions
-	if bt.root.left.val != 1 {
+	if bt.root.left().val() != 1 {
 		t.Fatal("expected left value from root to be 1")
 	}
-	if bt.root.right.right.val != 6 {
+	if bt.root.right().right().val() != 6 {
 		t.Fatal("expected right value right child of root to be 6")
 	}
 
-	if !bt.Delete(1) || bt.Contains(1) || bt.root.left.val == 1 {
+	if !bt.Delete(1) || bt.Contains(1) || bt.root.left().val() == 1 {
 		t.Fatal("expected 1 to be deleted from tree")
 	}
 
-	bt.root.right.right.left = nil // to force right side to bubble up
-	if !bt.Delete(6) || bt.Contains(6) || bt.root.left.val == 6 {
+	bt.root.right().right().setLeft(nil) // to force right side to bubble up
+	if !bt.Delete(6) || bt.Contains(6) || bt.root.left().val() == 6 {
 		t.Fatal("expected 6 to be deleted from tree")
 	}
 
