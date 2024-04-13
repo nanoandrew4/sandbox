@@ -30,9 +30,7 @@ func (avl *AvlTree[T]) Insert(valuesToInsert ...T) {
 }
 
 func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
-	if node == nil {
-		return 0
-	} else if val < node.val {
+	if val < node.val {
 		if node.left == nil {
 			node.left = &avlTNode[T]{val: val, parent: node}
 			if node.right == nil {
