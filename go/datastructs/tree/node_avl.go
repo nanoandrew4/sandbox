@@ -70,31 +70,10 @@ func (node *avlTNode[T]) balanceFactor() int {
 	return rh - lh
 }
 
-func (node *avlTNode[T]) rotateDir(avlTree *AvlTree[T], dir direction) *avlTNode[T] {
-	grandParent, oppositeDirChild := node.castParent(), node.castChildDir(1-dir)
-	odcDirChild := oppositeDirChild.castChildDir(dir)
-
-	node.setChildDir(odcDirChild, 1-dir)
-	if odcDirChild != nil {
-		odcDirChild.setParent(node)
-	}
-
-	var nodeDirInParent direction
-	if grandParent != nil {
-		nodeDirInParent = node.dirInParent()
-	}
-	oppositeDirChild.setChildDir(node, dir)
-	node.setParent(oppositeDirChild)
-	oppositeDirChild.setParent(grandParent)
-	if grandParent != nil {
-		grandParent.setChildDir(oppositeDirChild, nodeDirInParent)
-	} else {
-		avlTree.setRoot(oppositeDirChild)
-	}
-
+func (node *avlTNode[T]) rotateDir(avlTree *AvlTree[T], dir direction) {
+	newSubtreeRoot := rotateDir[T, *avlTNode[T]](node, avlTree, dir)
 	node.heightBelow = getMaxHeightBelow(node.castLeft(), node.castRight()) + 1
-	oppositeDirChild.heightBelow = getMaxHeightBelow(node, node.castChildDir(1-dir)) + 1
-	return oppositeDirChild
+	newSubtreeRoot.heightBelow = getMaxHeightBelow(node, node.castChildDir(1-dir)) + 1
 }
 
 func (node *avlTNode[T]) rotateOppositeDirAndThenDir(avlTree *AvlTree[T], dir direction) {

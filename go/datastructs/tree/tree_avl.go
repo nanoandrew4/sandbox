@@ -19,7 +19,8 @@ func (avl *AvlTree[T]) Insert(valuesToInsert ...T) {
 	}
 
 	for _, val := range valuesToInsert {
-		avl.height = avl.avlInsert(avl.root(), val) + 1
+		avl.avlInsert(avl.root(), val)
+		avl.height = avl.root().heightBelow + 1
 	}
 }
 

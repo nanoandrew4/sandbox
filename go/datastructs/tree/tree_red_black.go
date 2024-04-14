@@ -69,11 +69,11 @@ func (rb *RedBlackTree[T]) balanceTreeFromNewLeaf(leaf *rbTNode[T]) {
 	}
 
 	if node == parent.castChildDir(1-dir) {
-		parent.rotateDirRoot(rb, dir)
+		rotateDir[T, *rbTNode[T]](parent, rb, dir)
 		node = parent
 		parent = grandParent.castChildDir(dir)
 	}
-	grandParent.rotateDirRoot(rb, 1-dir)
+	rotateDir[T, *rbTNode[T]](grandParent, rb, 1-dir)
 	parent.isBlackNode = true
 	grandParent.isBlackNode = false
 }
