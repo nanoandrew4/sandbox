@@ -3,8 +3,7 @@ package tree
 import "sandbox/types"
 
 type RedBlackTree[T types.Sortable] struct {
-	height int
-	root   *rbTNode[T]
+	baseSortedBinaryTree[T, *rbTNode[T]]
 }
 
 func (rb *RedBlackTree[T]) Insert(valuesToInsert ...T) {
@@ -12,14 +11,13 @@ func (rb *RedBlackTree[T]) Insert(valuesToInsert ...T) {
 		return
 	}
 
-	if rb.root == nil {
-		rb.root = newRbNode[T](valuesToInsert[0], nil)
+	if rb.root() == nil {
+		rb.setRoot(newRbNode[T](valuesToInsert[0], nil))
 		valuesToInsert = valuesToInsert[1:]
-		rb.height++
 	}
 
 	for _, val := range valuesToInsert {
-		rb.insert(rb.root, val)
+		rb.insert(rb.root(), val)
 	}
 }
 
@@ -99,6 +97,6 @@ func (node *rbTNode[T]) rotateDirRoot(rb *RedBlackTree[T], dir direction) {
 	if grandParent != nil {
 		grandParent.setChildDir(oppositeDirChild, nodeDirInParent)
 	} else {
-		rb.root = oppositeDirChild
+		rb.setRoot(oppositeDirChild)
 	}
 }

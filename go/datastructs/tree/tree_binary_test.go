@@ -5,7 +5,7 @@ import (
 )
 
 func TestBinaryTree_Insert(t *testing.T) {
-	bt := &BinaryTree[int]{}
+	bt := &UnorderedBinaryTree[int]{}
 	bt.Insert(1, 2, 3)
 
 	var preOrderValues []int
@@ -39,12 +39,12 @@ func TestBinaryTree_Insert(t *testing.T) {
 }
 
 func TestBinaryTree_Equals(t *testing.T) {
-	bt1 := &BinaryTree[int]{}
+	bt1 := &UnorderedBinaryTree[int]{}
 	bt1.Insert(1)
 	bt1.Insert(2)
 	bt1.Insert(3)
 
-	bt2 := &BinaryTree[int]{}
+	bt2 := &UnorderedBinaryTree[int]{}
 	bt2.Insert(1)
 	bt2.Insert(2)
 
@@ -62,7 +62,7 @@ func TestBinaryTree_Equals(t *testing.T) {
 	}
 
 	// Same shape as 1, different values
-	bt3 := &BinaryTree[int]{}
+	bt3 := &UnorderedBinaryTree[int]{}
 	bt3.Insert(1)
 	bt3.Insert(2)
 	bt3.Insert(4)
@@ -73,7 +73,7 @@ func TestBinaryTree_Equals(t *testing.T) {
 }
 
 func TestBinaryTree_Contains(t *testing.T) {
-	bt := &BinaryTree[int]{}
+	bt := &UnorderedBinaryTree[int]{}
 	bt.Insert(1)
 	bt.Insert(2)
 	bt.Insert(3)
@@ -88,9 +88,9 @@ func TestBinaryTree_Contains(t *testing.T) {
 }
 
 func TestBinaryTree_Delete(t *testing.T) {
-	bt := &BinaryTree[int]{}
+	bt := &UnorderedBinaryTree[int]{}
 	bt.Insert(1)
-	if !bt.Delete(1) || bt.Contains(1) || bt.root != nil {
+	if !bt.Delete(1) || bt.Contains(1) || bt.root() != nil {
 		t.Fatal("expected 1 root node to be deleted")
 	}
 
@@ -99,19 +99,19 @@ func TestBinaryTree_Delete(t *testing.T) {
 	}
 
 	// check preconditions
-	if bt.root.left().val() != 1 {
+	if bt.root().left().val() != 1 {
 		t.Fatal("expected left value from root to be 1")
 	}
-	if bt.root.right().right().val() != 6 {
+	if bt.root().right().right().val() != 6 {
 		t.Fatal("expected right value right child of root to be 6")
 	}
 
-	if !bt.Delete(1) || bt.Contains(1) || bt.root.left().val() == 1 {
+	if !bt.Delete(1) || bt.Contains(1) || bt.root().left().val() == 1 {
 		t.Fatal("expected 1 to be deleted from tree")
 	}
 
-	bt.root.right().right().setLeft(nil) // to force right side to bubble up
-	if !bt.Delete(6) || bt.Contains(6) || bt.root.left().val() == 6 {
+	bt.root().right().right().setLeft(nil) // to force right side to bubble up
+	if !bt.Delete(6) || bt.Contains(6) || bt.root().left().val() == 6 {
 		t.Fatal("expected 6 to be deleted from tree")
 	}
 

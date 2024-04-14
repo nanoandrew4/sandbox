@@ -27,16 +27,9 @@ func (node *rbTNode[T]) dirInParent() direction {
 }
 
 func (node *rbTNode[T]) castParent() *rbTNode[T] {
-	return castAndReturnRbNode[T](node.parent())
+	return castAndReturnNode[T, *rbTNode[T]](node.parent())
 }
 
 func (node *rbTNode[T]) castChildDir(dir direction) *rbTNode[T] {
-	return castAndReturnRbNode(node.childDir(dir))
-}
-
-func castAndReturnRbNode[T types.Sortable](node binaryNode[T]) *rbTNode[T] {
-	if isNodeNil[T](node) {
-		return nil
-	}
-	return node.(*rbTNode[T])
+	return castAndReturnNode[T, *rbTNode[T]](node.childDir(dir))
 }

@@ -28,26 +28,19 @@ func (node *avlTNode[T]) setHeight(newHeight int) {
 }
 
 func (node *avlTNode[T]) castLeft() *avlTNode[T] {
-	return castAndReturnAvlNode(node.left())
+	return castAndReturnNode[T, *avlTNode[T]](node.left())
 }
 
 func (node *avlTNode[T]) castRight() *avlTNode[T] {
-	return castAndReturnAvlNode(node.right())
+	return castAndReturnNode[T, *avlTNode[T]](node.right())
 }
 
 func (node *avlTNode[T]) castParent() *avlTNode[T] {
-	return castAndReturnAvlNode[T](node.parent())
+	return castAndReturnNode[T, *avlTNode[T]](node.parent())
 }
 
 func (node *avlTNode[T]) castChildDir(dir direction) *avlTNode[T] {
-	return castAndReturnAvlNode(node.childDir(dir))
-}
-
-func castAndReturnAvlNode[T types.Sortable](node binaryNode[T]) *avlTNode[T] {
-	if isNodeNil[T](node) {
-		return nil
-	}
-	return node.(*avlTNode[T])
+	return castAndReturnNode[T, *avlTNode[T]](node.childDir(dir))
 }
 
 func (node *avlTNode[T]) balanceIfNecessary() (newSubtreeRoot *avlTNode[T]) {

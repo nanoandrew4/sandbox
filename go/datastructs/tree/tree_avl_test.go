@@ -9,7 +9,7 @@ func TestAvlTree_SingleRotationInsert(t *testing.T) {
 	if avlTree.height != 3 {
 		t.Fatal("expected tree height of 3")
 	}
-	if avlTree.root.balanceFactor() > 1 || avlTree.root.balanceFactor() < -1 {
+	if avlTree.root().balanceFactor() > 1 || avlTree.root().balanceFactor() < -1 {
 		t.Fatal("expected tree to be balanced")
 	}
 }
@@ -21,10 +21,10 @@ func TestAvlTree_DoubleRotationInsert(t *testing.T) {
 	if avlTree.height != 3 {
 		t.Fatal("expected tree height of 3")
 	}
-	if avlTree.root.val() != 10 {
+	if avlTree.root().val() != 10 {
 		t.Fatal("expected tree root after double left rotation to be 10")
 	}
-	if avlTree.root.balanceFactor() > 1 || avlTree.root.balanceFactor() < -1 {
+	if avlTree.root().balanceFactor() > 1 || avlTree.root().balanceFactor() < -1 {
 		t.Fatal("expected tree to be balanced")
 	}
 
@@ -33,10 +33,10 @@ func TestAvlTree_DoubleRotationInsert(t *testing.T) {
 	if avlTree.height != 3 {
 		t.Fatal("expected tree height of 3")
 	}
-	if avlTree.root.val() != 12 {
+	if avlTree.root().val() != 12 {
 		t.Fatal("expected tree root after double right rotation to be 12")
 	}
-	if avlTree.root.balanceFactor() > 1 || avlTree.root.balanceFactor() < -1 {
+	if avlTree.root().balanceFactor() > 1 || avlTree.root().balanceFactor() < -1 {
 		t.Fatal("expected tree to be balanced")
 	}
 }

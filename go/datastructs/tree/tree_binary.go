@@ -13,27 +13,25 @@ const (
 	postOrderTree
 )
 
-type NodeTraversalFunc[T types.Sortable] func(node binaryNode[T]) (continueTraversal bool)
-
-type BinaryTree[T types.Sortable] struct {
+type UnorderedBinaryTree[T types.Sortable] struct {
+	baseBinaryTree[T, *binaryTreeNode[T]]
 	tType TreeType
-	root  *binaryTreeNode[T]
 }
 
-func (bt *BinaryTree[T]) Insert(valuesToInsert ...T) {
+func (bt *UnorderedBinaryTree[T]) Insert(valuesToInsert ...T) {
 	if len(valuesToInsert) == 0 {
 		return
 	}
 
-	if bt.root == nil {
-		bt.root = &binaryTreeNode[T]{nodeVal: valuesToInsert[0]}
+	if bt.root() == nil {
+		bt.setRoot(&binaryTreeNode[T]{nodeVal: valuesToInsert[0]})
 		valuesToInsert = valuesToInsert[1:]
 	}
 
 	if len(valuesToInsert) > 0 {
 		var valIdx int
 		q := &datastructs.Queue[binaryNode[T]]{}
-		bt.walkBreadthFirstAndRunFunc(q, bt.root, func(node binaryNode[T]) bool {
+		bt.walkBreadthFirstAndRunFunc(q, bt.root(), func(node binaryNode[T]) bool {
 			if isNodeNil(node.left()) {
 				node.setLeft(&binaryTreeNode[T]{nodeVal: valuesToInsert[valIdx]})
 				q.Enqueue(node)
@@ -50,38 +48,26 @@ func (bt *BinaryTree[T]) Insert(valuesToInsert ...T) {
 	}
 }
 
-func (bt *BinaryTree[T]) WalkDepthFirst(f NodeTraversalFunc[T]) {
-	bt.walkDepthFirstAndRunFunc(bt.root, f)
+func (bt *UnorderedBinaryTree[T]) WalkDepthFirst(f NodeTraversalFunc[T]) {
+	bt.walkDepthFirstAndRunFunc(bt.root(), f)
 }
 
-func (bt *BinaryTree[T]) walkDepthFirstAndRunFunc(node binaryNode[T], f NodeTraversalFunc[T]) {
+func (bt *UnorderedBinaryTree[T]) walkDepthFirstAndRunFunc(node binaryNode[T], f NodeTraversalFunc[T]) {
 	if isNodeNil(node) {
 		return
 	}
 
 	switch bt.tType {
 	case preOrderTree:
-		if !f(node) {
-			return
-		}
-		bt.walkDepthFirstAndRunFunc(node.left(), f)
-		bt.walkDepthFirstAndRunFunc(node.right(), f)
+		TraversePreOrder(node, f)
 	case inOrderTree:
-		bt.walkDepthFirstAndRunFunc(node.left(), f)
-		if !f(node) {
-			return
-		}
-		bt.walkDepthFirstAndRunFunc(node.right(), f)
+		TraverseInOrder(node, f)
 	case postOrderTree:
-		bt.walkDepthFirstAndRunFunc(node.left(), f)
-		bt.walkDepthFirstAndRunFunc(node.right(), f)
-		if !f(node) {
-			return
-		}
+		TraversePostOrder(node, f)
 	}
 }
 
-func (bt *BinaryTree[T]) walkBreadthFirstAndRunFunc(q *datastructs.Queue[binaryNode[T]], node binaryNode[T], f NodeTraversalFunc[T]) {
+func (bt *UnorderedBinaryTree[T]) walkBreadthFirstAndRunFunc(q *datastructs.Queue[binaryNode[T]], node binaryNode[T], f NodeTraversalFunc[T]) {
 	if node == nil {
 		return
 	}
@@ -98,9 +84,9 @@ func (bt *BinaryTree[T]) walkBreadthFirstAndRunFunc(q *datastructs.Queue[binaryN
 	bt.walkBreadthFirstAndRunFunc(q, nextNode, f)
 }
 
-func (bt *BinaryTree[T]) Contains(val T) bool {
+func (bt *UnorderedBinaryTree[T]) Contains(val T) bool {
 	var found bool
-	bt.walkDepthFirstAndRunFunc(bt.root, func(node binaryNode[T]) (continueTraversal bool) {
+	bt.walkDepthFirstAndRunFunc(bt.root(), func(node binaryNode[T]) (continueTraversal bool) {
 		if !isNodeNil(node) && node.val() == val {
 			found = true
 			return false
@@ -110,39 +96,18 @@ func (bt *BinaryTree[T]) Contains(val T) bool {
 	return found
 }
 
-func (bt *BinaryTree[T]) Equals(bt2 *BinaryTree[T]) bool {
-	if bt2 == nil {
-		return false
-	}
-	if !areNodesEqual[T](bt.root, bt2.root) {
-		return false
-	}
-	return true
+func (bt *UnorderedBinaryTree[T]) Delete(val T) bool {
+	return bt.deleteVal(nil, bt.root(), val)
 }
 
-func areNodesEqual[T types.Sortable](n1, n2 binaryNode[T]) bool {
-	if n1 == nil && n2 == nil {
-		return true
-	} else if n1 == nil || n2 == nil {
-		return false
-	} else if n1.val() != n2.val() {
-		return false
-	}
-	return areNodesEqual(n1.left(), n2.left()) && areNodesEqual(n1.right(), n2.right())
-}
-
-func (bt *BinaryTree[T]) Delete(val T) bool {
-	return bt.deleteVal(nil, bt.root, val)
-}
-
-func (bt *BinaryTree[T]) deleteVal(parent, node binaryNode[T], val T) bool {
+func (bt *UnorderedBinaryTree[T]) deleteVal(parent, node binaryNode[T], val T) bool {
 	if isNodeNil(node) {
 		return false
 	}
 
 	if node.val() == val {
-		if parent == nil {
-			bt.root = nil
+		if isNodeNil(parent) {
+			bt.setRoot(nil)
 		} else if isNodeNil(node.left()) && isNodeNil(node.right()) {
 			if parent.left() == node {
 				parent.setLeft(nil)
@@ -160,7 +125,7 @@ func (bt *BinaryTree[T]) deleteVal(parent, node binaryNode[T], val T) bool {
 }
 
 func bubbleUpLeftSideValues[T types.Sortable](parent, node binaryNode[T]) *T {
-	if node == nil {
+	if isNodeNil(node) {
 		return nil
 	}
 

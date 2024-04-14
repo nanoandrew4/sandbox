@@ -5,7 +5,7 @@ import (
 )
 
 type BinarySearchTree[T types.Sortable] struct {
-	root *binaryTreeNode[T]
+	baseSortedBinaryTree[T, *binaryTreeNode[T]]
 }
 
 func (bst *BinarySearchTree[T]) Insert(valuesToInsert ...T) {
@@ -13,13 +13,13 @@ func (bst *BinarySearchTree[T]) Insert(valuesToInsert ...T) {
 		return
 	}
 
-	if bst.root == nil {
-		bst.root = &binaryTreeNode[T]{nodeVal: valuesToInsert[0]}
+	if bst.root() == nil {
+		bst.setRoot(&binaryTreeNode[T]{nodeVal: valuesToInsert[0]})
 		valuesToInsert = valuesToInsert[1:]
 	}
 
 	for _, val := range valuesToInsert {
-		insertValue(bst.root, val)
+		insertValue(bst.root(), val)
 	}
 }
 
@@ -39,30 +39,13 @@ func insertValue[T types.Sortable](node binaryNode[T], val T) {
 	}
 }
 
-func (bst *BinarySearchTree[T]) Contains(val T) bool {
-	_, node := findParentAndNodeByVal(nil, bst.root, val)
-	return node != nil
-}
-
-func findParentAndNodeByVal[T types.Sortable](parent, node binaryNode[T], val T) (p, n binaryNode[T]) {
-	if isNodeNil(node) {
-		return nil, nil
-	} else if node.val() == val {
-		return parent, node
-	} else if val < node.val() {
-		return findParentAndNodeByVal(node, node.left(), val)
-	} else {
-		return findParentAndNodeByVal(node, node.right(), val)
-	}
-}
-
 func (bst *BinarySearchTree[T]) Delete(val T) bool {
-	nodeToDeleteParent, nodeToDelete := findParentAndNodeByVal(nil, bst.root, val)
+	nodeToDeleteParent, nodeToDelete := findParentAndNodeByVal(nil, bst.root(), val)
 
 	if nodeToDelete == nil {
 		return false
 	} else if nodeToDeleteParent == nil {
-		bst.root = nil
+		bst.setRoot(nil)
 	} else if nodeToDelete.left() == nil && nodeToDelete.right() == nil {
 		if nodeToDeleteParent.left() == nodeToDelete {
 			nodeToDeleteParent.setLeft(nil)
@@ -94,21 +77,4 @@ func findMinNode[T types.Sortable](parent, node binaryNode[T]) (p, n binaryNode[
 		return parent, node
 	}
 	return p, n
-}
-
-func (bst *BinarySearchTree[T]) ToOrderedArray() []T {
-	var arr []T
-	walkInOrder(bst.root, func(node binaryNode[T]) {
-		arr = append(arr, node.val())
-	})
-	return arr
-}
-
-func walkInOrder[T types.Sortable](node binaryNode[T], f func(node binaryNode[T])) {
-	if node == nil {
-		return
-	}
-	walkInOrder(node.left(), f)
-	f(node)
-	walkInOrder(node.right(), f)
 }

@@ -3,8 +3,8 @@ package tree
 import "sandbox/types"
 
 type AvlTree[T types.Sortable] struct {
+	baseSortedBinaryTree[T, *avlTNode[T]]
 	height int
-	root   *avlTNode[T]
 }
 
 func (avl *AvlTree[T]) Insert(valuesToInsert ...T) {
@@ -12,14 +12,14 @@ func (avl *AvlTree[T]) Insert(valuesToInsert ...T) {
 		return
 	}
 
-	if avl.root == nil {
-		avl.root = newAvlNode[T](valuesToInsert[0], nil)
+	if avl.root() == nil {
+		avl.setRoot(newAvlNode[T](valuesToInsert[0], nil))
 		valuesToInsert = valuesToInsert[1:]
 		avl.height++
 	}
 
 	for _, val := range valuesToInsert {
-		avl.height = avl.avlInsert(avl.root, val) + 1
+		avl.height = avl.avlInsert(avl.root(), val) + 1
 	}
 }
 
@@ -47,24 +47,7 @@ func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
 	}
 	newSubtreeRoot := node.balanceIfNecessary()
 	if newSubtreeRoot.castParent() == nil {
-		avl.root = newSubtreeRoot
+		avl.setRoot(newSubtreeRoot)
 	}
 	return node.height()
-}
-
-func (avl *AvlTree[T]) Contains(val T) bool {
-	_, node := findAvlParentAndNodeByVal(nil, avl.root, val)
-	return node != nil
-}
-
-func findAvlParentAndNodeByVal[T types.Sortable](parent, node *avlTNode[T], val T) (p, n *avlTNode[T]) {
-	if node == nil {
-		return nil, nil
-	} else if node.val() == val {
-		return parent, node
-	} else if val < node.val() {
-		return findAvlParentAndNodeByVal(node, node.castLeft(), val)
-	} else {
-		return findAvlParentAndNodeByVal(node, node.castRight(), val)
-	}
 }
