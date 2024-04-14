@@ -1,6 +1,9 @@
 package tree
 
-import "testing"
+import (
+	"math/rand/v2"
+	"testing"
+)
 
 func TestAvlTree_SingleRotationInsert(t *testing.T) {
 	avlTree := &AvlTree[int]{}
@@ -39,4 +42,27 @@ func TestAvlTree_DoubleRotationInsert(t *testing.T) {
 	if avlTree.root().balanceFactor() > 1 || avlTree.root().balanceFactor() < -1 {
 		t.Fatal("expected tree to be balanced")
 	}
+}
+
+func TestAvlTree_Insert(t *testing.T) {
+	avlTree := &AvlTree[int]{}
+	for range insertionsToTest {
+		valToInsert := rand.Int()
+		avlTree.Insert(valToInsert)
+	}
+
+	avlOrderedArray := avlTree.ToOrderedArray()
+	for i := 1; i < len(avlOrderedArray); i++ {
+		if avlOrderedArray[i-1] > avlOrderedArray[i] {
+			t.Fatalf("avl tree ordered array check failed at index %d", i-1)
+		}
+	}
+
+	TraversePreOrder(avlTree.root(), func(node binaryNode[int]) (continueTraversal bool) {
+		castedNode := node.(*avlTNode[int])
+		if castedNode.castParent() != nil && castedNode.castParent().heightBelow-castedNode.heightBelow > 2 {
+			t.Fatal("height difference between nodes was greater than 2")
+		}
+		return true
+	})
 }

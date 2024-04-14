@@ -33,3 +33,26 @@ func (node *rbTNode[T]) castParent() *rbTNode[T] {
 func (node *rbTNode[T]) castChildDir(dir direction) *rbTNode[T] {
 	return castAndReturnNode[T, *rbTNode[T]](node.childDir(dir))
 }
+
+func (node *rbTNode[T]) rotateDirRoot(rb *RedBlackTree[T], dir direction) {
+	grandParent, oppositeDirChild := node.castParent(), node.castChildDir(1-dir)
+	odcDirChild := oppositeDirChild.castChildDir(dir)
+
+	node.setChildDir(odcDirChild, 1-dir)
+	if odcDirChild != nil {
+		odcDirChild.setParent(node)
+	}
+
+	var nodeDirInParent direction
+	if grandParent != nil {
+		nodeDirInParent = node.dirInParent()
+	}
+	oppositeDirChild.setChildDir(node, dir)
+	node.setParent(oppositeDirChild)
+	oppositeDirChild.setParent(grandParent)
+	if grandParent != nil {
+		grandParent.setChildDir(oppositeDirChild, nodeDirInParent)
+	} else {
+		rb.setRoot(oppositeDirChild)
+	}
+}

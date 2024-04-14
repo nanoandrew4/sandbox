@@ -28,26 +28,23 @@ func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
 		if node.castLeft() == nil {
 			node.setLeft(newAvlNode[T](val, node))
 			if node.castRight() == nil {
-				node.setHeight(node.height() + 1)
+				node.heightBelow++
 			}
-			return node.height()
+			return node.heightBelow
 		}
 
-		node.setHeight(max(node.height(), avl.avlInsert(node.castLeft(), val)+1))
+		node.heightBelow = max(node.heightBelow, avl.avlInsert(node.castLeft(), val)+1)
 	} else if node.val() <= val {
 		if node.castRight() == nil {
 			node.setRight(newAvlNode[T](val, node))
 			if node.castLeft() == nil {
-				node.setHeight(node.height() + 1)
+				node.heightBelow++
 			}
-			return node.height()
+			return node.heightBelow
 		}
 
-		node.setHeight(max(node.height(), avl.avlInsert(node.castRight(), val)+1))
+		node.heightBelow = max(node.heightBelow, avl.avlInsert(node.castRight(), val)+1)
 	}
-	newSubtreeRoot := node.balanceIfNecessary()
-	if newSubtreeRoot.castParent() == nil {
-		avl.setRoot(newSubtreeRoot)
-	}
-	return node.height()
+	node.balanceIfNecessary(avl)
+	return node.heightBelow
 }

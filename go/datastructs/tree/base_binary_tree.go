@@ -1,6 +1,8 @@
 package tree
 
-import "sandbox/types"
+import (
+	"sandbox/types"
+)
 
 type BinaryTree[T types.Sortable, R binaryNode[T]] interface {
 	Insert(valuesToInsert ...T)

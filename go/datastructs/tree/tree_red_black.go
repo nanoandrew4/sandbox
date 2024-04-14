@@ -27,7 +27,7 @@ func (rb *RedBlackTree[T]) insert(node *rbTNode[T], val T) {
 		nextDir = left
 	}
 
-	if node.childDir(nextDir) == nil {
+	if node.castChildDir(nextDir) == nil {
 		node.setChildDir(newRbNode[T](val, node), nextDir)
 		rb.balanceTreeFromNewLeaf(node.castChildDir(nextDir))
 	} else {
@@ -76,27 +76,4 @@ func (rb *RedBlackTree[T]) balanceTreeFromNewLeaf(leaf *rbTNode[T]) {
 	grandParent.rotateDirRoot(rb, 1-dir)
 	parent.isBlackNode = true
 	grandParent.isBlackNode = false
-}
-
-func (node *rbTNode[T]) rotateDirRoot(rb *RedBlackTree[T], dir direction) {
-	grandParent, oppositeDirChild := node.castParent(), node.castChildDir(1-dir)
-	odcDirChild := oppositeDirChild.castChildDir(dir)
-
-	node.setChildDir(odcDirChild, 1-dir)
-	if odcDirChild != nil {
-		odcDirChild.setParent(node)
-	}
-
-	var nodeDirInParent direction
-	if grandParent != nil {
-		nodeDirInParent = node.dirInParent()
-	}
-	oppositeDirChild.setChildDir(node, dir)
-	node.setParent(oppositeDirChild)
-	oppositeDirChild.setParent(grandParent)
-	if grandParent != nil {
-		grandParent.setChildDir(oppositeDirChild, nodeDirInParent)
-	} else {
-		rb.setRoot(oppositeDirChild)
-	}
 }

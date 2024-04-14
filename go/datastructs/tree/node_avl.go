@@ -19,14 +19,6 @@ func newAvlNode[T types.Sortable](val T, parent *avlTNode[T]) *avlTNode[T] {
 	return newNode
 }
 
-func (node *avlTNode[T]) height() int {
-	return node.heightBelow
-}
-
-func (node *avlTNode[T]) setHeight(newHeight int) {
-	node.heightBelow = newHeight
-}
-
 func (node *avlTNode[T]) castLeft() *avlTNode[T] {
 	return castAndReturnNode[T, *avlTNode[T]](node.left())
 }
@@ -43,87 +35,79 @@ func (node *avlTNode[T]) castChildDir(dir direction) *avlTNode[T] {
 	return castAndReturnNode[T, *avlTNode[T]](node.childDir(dir))
 }
 
-func (node *avlTNode[T]) balanceIfNecessary() (newSubtreeRoot *avlTNode[T]) {
+func (node *avlTNode[T]) dirInParent() direction {
+	if node.parent().left() == node {
+		return left
+	}
+	return right
+}
+
+func (node *avlTNode[T]) balanceIfNecessary(avlTree *AvlTree[T]) {
 	bf := node.balanceFactor()
 	if bf > 1 {
 		if node.castRight().balanceFactor() > 0 { // right heavy
-			return node.rotateDir(left)
+			node.rotateDir(avlTree, left)
 		} else {
-			return node.rotateOppositeDirAndThenDir(left)
+			node.rotateOppositeDirAndThenDir(avlTree, left)
 		}
-	}
-	if bf < -1 { // left heavy
+	} else if bf < -1 { // left heavy
 		if node.castLeft().balanceFactor() < 0 {
-			return node.rotateDir(right)
+			node.rotateDir(avlTree, right)
 		} else {
-			return node.rotateOppositeDirAndThenDir(right)
+			node.rotateOppositeDirAndThenDir(avlTree, right)
 		}
 	}
-	return node
 }
 
 func (node *avlTNode[T]) balanceFactor() int {
 	var lh, rh int
 	if lNode := node.castLeft(); lNode != nil {
-		lh = lNode.height() + 1
+		lh = lNode.heightBelow + 1
 	}
 	if rNode := node.castRight(); rNode != nil {
-		rh = rNode.height() + 1
+		rh = rNode.heightBelow + 1
 	}
 	return rh - lh
 }
 
-func (node *avlTNode[T]) rotateDir(dir direction) (newSubtreeRoot *avlTNode[T]) {
-	newSubtreeRoot = node.castChildDir(1 - dir)
-	newSubtreeRootChildDir := newSubtreeRoot.castChildDir(dir)
-	if newSubtreeRootChildDir != nil {
-		newSubtreeRootChildDir.setParent(node)
+func (node *avlTNode[T]) rotateDir(avlTree *AvlTree[T], dir direction) *avlTNode[T] {
+	grandParent, oppositeDirChild := node.castParent(), node.castChildDir(1-dir)
+	odcDirChild := oppositeDirChild.castChildDir(dir)
+
+	node.setChildDir(odcDirChild, 1-dir)
+	if odcDirChild != nil {
+		odcDirChild.setParent(node)
 	}
-	node.setChildDir(newSubtreeRootChildDir, 1-dir)
-	newSubtreeRoot.setChildDir(node, dir)
-	if node.castParent() != nil {
-		swapChild(node.parent(), node, newSubtreeRoot)
+
+	var nodeDirInParent direction
+	if grandParent != nil {
+		nodeDirInParent = node.dirInParent()
+	}
+	oppositeDirChild.setChildDir(node, dir)
+	node.setParent(oppositeDirChild)
+	oppositeDirChild.setParent(grandParent)
+	if grandParent != nil {
+		grandParent.setChildDir(oppositeDirChild, nodeDirInParent)
 	} else {
-		newSubtreeRoot.setParent(nil)
+		avlTree.setRoot(oppositeDirChild)
 	}
-	node.setParent(newSubtreeRoot)
-	if newSubtreeRoot.balanceFactor() == 0 {
-		newSubtreeRoot.heightBelow++
-		node.heightBelow--
-	} else {
-		node.heightBelow -= 2
-	}
-	return newSubtreeRoot
+
+	node.heightBelow = getMaxHeightBelow(node.castLeft(), node.castRight()) + 1
+	oppositeDirChild.heightBelow = getMaxHeightBelow(node, node.castChildDir(1-dir)) + 1
+	return oppositeDirChild
 }
 
-func (node *avlTNode[T]) rotateOppositeDirAndThenDir(dir direction) (newSubtreeRoot *avlTNode[T]) {
-	oldRightChild := node.castChildDir(1 - dir)
-	newSubtreeRoot = oldRightChild.castChildDir(dir)
-	newSubtreeRootOppDirChild := newSubtreeRoot.castChildDir(1 - dir)
+func (node *avlTNode[T]) rotateOppositeDirAndThenDir(avlTree *AvlTree[T], dir direction) {
+	node.castChildDir(1-dir).rotateDir(avlTree, 1-dir)
+	node.rotateDir(avlTree, dir)
+}
 
-	// right rotation
-	oldRightChild.setChildDir(newSubtreeRootOppDirChild, dir)
-	if newSubtreeRootOppDirChild != nil {
-		newSubtreeRootOppDirChild.setParent(oldRightChild)
+func getMaxHeightBelow[T types.Sortable](nodes ...*avlTNode[T]) int {
+	maxHeight := -1 // if all nodes are nil, parent height will be calculated as 0
+	for _, node := range nodes {
+		if node != nil {
+			maxHeight = max(maxHeight, node.heightBelow)
+		}
 	}
-	newSubtreeRoot.setChildDir(oldRightChild, 1-dir)
-	oldRightChild.setParent(newSubtreeRoot)
-
-	// left rotation
-	newSubtreeRootDirChild := newSubtreeRoot.castChildDir(dir)
-	node.setChildDir(newSubtreeRootDirChild, 1-dir)
-	if newSubtreeRootDirChild != nil {
-		newSubtreeRootDirChild.setParent(node)
-	}
-	newSubtreeRoot.setChildDir(node, dir)
-	if node.castParent() != nil {
-		swapChild(node.parent(), node, newSubtreeRoot)
-	} else {
-		newSubtreeRoot.setParent(nil)
-	}
-	node.setParent(newSubtreeRoot)
-
-	newSubtreeRoot.heightBelow++
-	node.heightBelow--
-	return newSubtreeRoot
+	return maxHeight
 }
