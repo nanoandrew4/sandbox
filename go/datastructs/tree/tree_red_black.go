@@ -35,6 +35,12 @@ func (rb *RedBlackTree[T]) insert(node *rbTNode[T], val T) {
 	}
 }
 
+func (rb *RedBlackTree[T]) Delete(val T) bool {
+	deleted, _ := deleteBinaryNode[T, *rbTNode[T]](rb, val)
+	//rb.balanceTreeFromNewLeaf(nodeToBalanceFrom)
+	return deleted
+}
+
 func (rb *RedBlackTree[T]) balanceTreeFromNewLeaf(leaf *rbTNode[T]) {
 	var grandParent, uncle *rbTNode[T]
 	var dir direction

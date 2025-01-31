@@ -19,12 +19,12 @@ func (avl *AvlTree[T]) Insert(valuesToInsert ...T) {
 	}
 
 	for _, val := range valuesToInsert {
-		avl.avlInsert(avl.root(), val)
+		avl.insert(avl.root(), val)
 		avl.height = avl.root().heightBelow + 1
 	}
 }
 
-func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
+func (avl *AvlTree[T]) insert(node *avlTNode[T], val T) int {
 	if val < node.val() {
 		if node.castLeft() == nil {
 			node.setLeft(newAvlNode[T](val, node))
@@ -34,7 +34,7 @@ func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
 			return node.heightBelow
 		}
 
-		node.heightBelow = max(node.heightBelow, avl.avlInsert(node.castLeft(), val)+1)
+		node.heightBelow = max(node.heightBelow, avl.insert(node.castLeft(), val)+1)
 	} else if node.val() <= val {
 		if node.castRight() == nil {
 			node.setRight(newAvlNode[T](val, node))
@@ -44,7 +44,7 @@ func (avl *AvlTree[T]) avlInsert(node *avlTNode[T], val T) int {
 			return node.heightBelow
 		}
 
-		node.heightBelow = max(node.heightBelow, avl.avlInsert(node.castRight(), val)+1)
+		node.heightBelow = max(node.heightBelow, avl.insert(node.castRight(), val)+1)
 	}
 	node.balanceIfNecessary(avl)
 	return node.heightBelow

@@ -2,6 +2,7 @@ package tree
 
 import (
 	"math/rand"
+	rand2 "math/rand/v2"
 	"sandbox/types"
 	"testing"
 )
@@ -35,6 +36,28 @@ func TestRedBlackTree_Insert(t *testing.T) {
 	}
 
 	checkRbTreeColoring(t, rbTree)
+}
+
+func TestRedBlackTree_Delete(t *testing.T) {
+	rbTree := &RedBlackTree[int]{}
+	for range insertionsToTest {
+		valToInsert := rand.Int()
+		rbTree.Insert(valToInsert)
+	}
+
+	rbArray := rbTree.ToOrderedArray()
+	rand2.Shuffle(len(rbArray), func(i, j int) {
+		rbArray[i], rbArray[j] = rbArray[j], rbArray[i]
+	})
+
+	for idx, treeVal := range rbArray {
+		if !rbTree.Contains(treeVal) {
+			t.Fatalf("%d: expected tree to contain %d", idx, treeVal)
+		}
+		if !rbTree.Delete(treeVal) {
+			t.Fatalf("%d: expected to delete %d successfully", idx, treeVal)
+		}
+	}
 }
 
 func checkRbTreeColoring[T types.Sortable](t *testing.T, tree *RedBlackTree[T]) {

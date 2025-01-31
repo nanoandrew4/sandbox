@@ -1,6 +1,8 @@
 package tree
 
 import (
+	"math/rand"
+	rand2 "math/rand/v2"
 	"slices"
 	"testing"
 )
@@ -62,11 +64,11 @@ func TestBinarySearchTree_Delete(t *testing.T) {
 		t.Fatal("expected rightmost leaf to be 93")
 	}
 
-	if !bst.Delete(25) || !bst.Contains(25) || bst.root().left().val() != 25 || bst.root().left().right().left().val() != 31 {
-		t.Fatal("expected first 25 to be deleted from tree and replaced by second 25")
+	if !bst.Delete(25) || !bst.Contains(25) || bst.root().left().val() != 18 || !isNodeNil(bst.root().left().left().right()) {
+		t.Fatal("expected first 25 to be deleted from tree and replaced by 18")
 	}
-	if !bst.Delete(25) || bst.Contains(25) || bst.root().left().val() != 31 || bst.root().left().right().left().val() != 33 {
-		t.Fatal("expected second 25 to be deleted from tree and replaced by 31")
+	if !bst.Delete(25) || bst.Contains(25) || bst.root().left().right().val() != 37 {
+		t.Fatal("expected second 25 to be deleted from tree and replaced by 37")
 	}
 	if !bst.Delete(6) || bst.Contains(6) || bst.root().left().left().left().val() != 5 || bst.root().left().left().left().left().val() != 4 || bst.root().left().left().left().right() != nil {
 		t.Fatal("expected 6 to be deleted from tree and replaced by 5, which has a left child 4 and no right child")
@@ -80,5 +82,34 @@ func TestBinarySearchTree_Delete(t *testing.T) {
 
 	if bst.Delete(500) {
 		t.Fatal("expected 500 not to be deleted from tree as it does not exist")
+	}
+}
+
+func TestBinarySearchTree_Delete2(t *testing.T) {
+	bst := &BinarySearchTree[int]{}
+	mVal := map[int]int{}
+	for range insertionsToTest {
+		valToInsert := rand.Int()
+		mVal[valToInsert]++
+		bst.Insert(valToInsert)
+	}
+
+	rbArray := bst.ToOrderedArray()
+	rand2.Shuffle(len(rbArray), func(i, j int) {
+		rbArray[i], rbArray[j] = rbArray[j], rbArray[i]
+	})
+
+	for idx, treeVal := range rbArray {
+		if !bst.Contains(treeVal) {
+			t.Fatalf("%d: expected tree to contain %d", idx, treeVal)
+		}
+		if !bst.Delete(treeVal) {
+			t.Fatalf("%d: expected to delete %d successfully", idx, treeVal)
+		}
+		for _, tVal := range rbArray[idx+1:] {
+			if !bst.Contains(tVal) {
+				t.Fatalf("%d: expected tree to contain %d", idx, tVal)
+			}
+		}
 	}
 }

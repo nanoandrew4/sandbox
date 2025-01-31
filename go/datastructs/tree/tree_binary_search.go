@@ -40,41 +40,6 @@ func insertValue[T types.Sortable](node binaryNode[T], val T) {
 }
 
 func (bst *BinarySearchTree[T]) Delete(val T) bool {
-	nodeToDeleteParent, nodeToDelete := findParentAndNodeByVal(nil, bst.root(), val)
-
-	if nodeToDelete == nil {
-		return false
-	} else if nodeToDeleteParent == nil {
-		bst.setRoot(nil)
-	} else if nodeToDelete.left() == nil && nodeToDelete.right() == nil {
-		if nodeToDeleteParent.left() == nodeToDelete {
-			nodeToDeleteParent.setLeft(nil)
-		} else {
-			nodeToDeleteParent.setRight(nil)
-		}
-	} else if nodeToDelete.right() != nil {
-		_, minNode := findMinNode(nodeToDelete, nodeToDelete.right())
-		nodeToDelete.setVal(minNode.val())
-		minNode.setVal(minNode.right().val())
-		minNode.setLeft(minNode.right().left())
-		minNode.setRight(minNode.right().right())
-	} else {
-		nodeToDelete.setVal(nodeToDelete.left().val())
-		nodeToDelete.setLeft(nodeToDelete.left().left())
-		nodeToDelete.setRight(nodeToDelete.left().right())
-	}
-
-	return true
-}
-
-func findMinNode[T types.Sortable](parent, node binaryNode[T]) (p, n binaryNode[T]) {
-	if node == nil {
-		return nil, nil
-	}
-
-	p, n = findMinNode(node, node.left())
-	if p == nil && n == nil {
-		return parent, node
-	}
-	return p, n
+	deleted, _ := deleteBinaryNode[T, *binaryTreeNode[T]](bst, val)
+	return deleted
 }
